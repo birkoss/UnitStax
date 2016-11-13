@@ -24,6 +24,9 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 
         Tile tile = GetComponent<Tile>();
         if (tile == null || (tile.isEmpty && tile.isActive) ) {
+            GameObject card = DragHandler.itemBeginDragged.transform.parent.gameObject;
+            card.GetComponent<Animator>().enabled = true;
+
             DragHandler.itemBeginDragged.transform.SetParent(transform);
             DragHandler.itemBeginDragged.transform.localPosition = new Vector3(0f, 0f, 0f);
             DragHandler.itemBeginDragged.GetComponent<Alive>().player = 0;

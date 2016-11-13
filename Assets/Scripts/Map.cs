@@ -186,6 +186,7 @@ public class Map : MonoBehaviour, IUnitPlaced {
     * Events
     */
     public void OnUnitPlaced(GameObject unit) {
+        unit.GetComponent<Animator>().enabled = true;
         Debug.Log("OnUnitPlaced...");
         //DisableMovement();
         StartCoroutine(DeactivateTiles());
