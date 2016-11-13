@@ -132,10 +132,11 @@ public class Turn : MonoBehaviour, ITurnEnded {
                     attacker.transform.SetParent(actions[i].unit.transform);
 
                     yield return new WaitForSeconds(0.25f);
-
-                    map.GetComponent<Map>().Clean();
                 }
             }
+
+            // When all actions are resolved, clean the map
+            map.GetComponent<Map>().Clean();
         }
 
         // Resolve combat
