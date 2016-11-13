@@ -31,7 +31,8 @@ public class DropHandler : MonoBehaviour, IDropHandler {
             DragHandler.itemBeginDragged.transform.localPosition = new Vector3(0f, 0f, 0f);
             DragHandler.itemBeginDragged.GetComponent<Alive>().player = 0;
 
-            ExecuteEvents.ExecuteHierarchy<IUnitPlaced>(gameObject, null, (x,y) => x.OnUnitPlaced(DragHandler.itemBeginDragged));
+            ExecuteEvents.ExecuteHierarchy<ITurnEnded>(gameObject, null, (x,y) => x.OnTurnEnded(DragHandler.itemBeginDragged));
+            // ExecuteEvents.ExecuteHierarchy<IUnitPlaced>(gameObject, null, (x,y) => x.OnUnitPlaced(DragHandler.itemBeginDragged));
         }
     }
 }

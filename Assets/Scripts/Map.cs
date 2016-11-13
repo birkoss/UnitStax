@@ -8,7 +8,6 @@ public class Map : MonoBehaviour, IUnitPlaced {
     private int rows = 6;
     private int cols = 3;
 
-    private Turn.CallBack callback;
 
     public GameObject[] active {
         get {
@@ -45,8 +44,8 @@ public class Map : MonoBehaviour, IUnitPlaced {
     /*
     * Methods
     */
-    public void EnableMovement(Turn.CallBack new_callback) {
-        callback = new_callback;
+    public List<int> GetTilesAvailable(bool isEmpty = true) {
+        List<int> tiles = new List<int>();
 
         List<int> indexes = new List<int>();
         for (int i=0; i<transform.childCount; i++) {
@@ -55,24 +54,21 @@ public class Map : MonoBehaviour, IUnitPlaced {
             }
         }
 
-        int index = indexes[Random.Range(0, indexes.Count-1)];
-        EnableTile(index);
-    }
+        // Add the main tile
+        tiles.Add(indexes[Random.Range(0, indexes.Count-1)]);
 
+        // Get all neighboors
+        List<int> neighboors = GetNeighboors(transform.GetChild(tiles[0]).gameObject.GetComponent<Tile>().position);
+        for (int i=0; i<neighboors.Count; i++) {
+            tiles.Add(neighboors[i]);
+        }
+
+        return tiles;
+    }
 
     public void DisableMovement() {
         for (int i=0; i<transform.childCount; i++) {
             transform.GetChild(i).gameObject.GetComponent<Tile>().isActive = false;
-        }
-    }
-
-
-    public void EnableTile(int index, bool mainTile = true) {
-        GameObject tile = transform.GetChild(index).gameObject;
-        tile.GetComponent<Tile>().isActive = true;
-
-        if (mainTile) {
-            StartCoroutine(ChooseOtherTiles(GetNeighboors(tile.GetComponent<Tile>().position)));
         }
     }
 
@@ -144,43 +140,6 @@ public class Map : MonoBehaviour, IUnitPlaced {
         }
     }
 
-    /*
-    * Coroutine
-    */
-    IEnumerator ChooseOtherTiles(List<int> indexes) {
-        float speed = 0.25f;
-
-        yield return new WaitForSeconds(speed);
-        for (int i=0; i<indexes.Count; i++) {
-            Tile child_tile = transform.GetChild(indexes[i]).gameObject.GetComponent<Tile>();
-            if (child_tile.isEmpty) {
-                EnableTile(indexes[i], false);
-            }
-            yield return new WaitForSeconds(speed);
-        }
-
-        if (callback != null) {
-            callback();
-        }
-    }
-
-
-    private IEnumerator DeactivateTiles() {
-        yield return new WaitForSeconds(0.25f);
-
-        for (int i=0; i<transform.childCount; i++) {
-            if (transform.GetChild(i).gameObject.GetComponent<Tile>().isActive) {
-                transform.GetChild(i).gameObject.GetComponent<Tile>().active.GetComponent<Animator>().Play("FadeOff");
-                yield return new WaitForSeconds(0.25f);
-                transform.GetChild(i).gameObject.GetComponent<Tile>().isActive = false;
-            }
-        }
-
-        yield return new WaitForSeconds(0.25f);
-
-        ExecuteEvents.ExecuteHierarchy<ITurnEnded>(gameObject, null, (x,y) => x.OnTurnEnded());
-    }
-
 
     /*
     * Events
@@ -188,9 +147,9 @@ public class Map : MonoBehaviour, IUnitPlaced {
     public void OnUnitPlaced(GameObject unit) {
         unit.GetComponent<Animator>().enabled = true;
         unit.GetComponent<DragHandler>().enabled = false;
-        Debug.Log("OnUnitPlaced...");
+        Debug.Log("Map.OnUnitPlaced...");
         //DisableMovement();
-        StartCoroutine(DeactivateTiles());
+        // StartCoroutine(DeactivateTiles());
     }
 }
 

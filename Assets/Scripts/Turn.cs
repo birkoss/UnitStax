@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Turn : MonoBehaviour, ITurnEnded {
+public class Turn : MonoBehaviour, ITurnEnded, IUnitPlaced {
 
     public GameObject map;
     public GameObject cards;
@@ -30,7 +30,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
     */
     private void Begin() {
         Debug.Log("Begin: " + currentPlayer);
-        map.GetComponent<Map>().EnableMovement(StartAction);
+        StartCoroutine(ActivateMap());
     }
 
     private void StartAction() {
@@ -73,7 +73,8 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
         Debug.Log("Before event...");
 
-        map.GetComponent<Map>().OnUnitPlaced(unit);
+        // map.GetComponent<Map>().OnUnitPlaced(unit);
+        OnTurnEnded(unit);
     }
 
 
@@ -156,11 +157,62 @@ public class Turn : MonoBehaviour, ITurnEnded {
         End();
     }
 
+
+    private IEnumerator ActivateMap(bool isActive = true) {
+        float speed = 0.25f;
+
+        List<int> indexes = new List<int>();
+
+        if (isActive) {
+            indexes = map.GetComponent<Map>().GetTilesAvailable();
+        } else {
+            for (int i=0; i<map.transform.childCount; i++) {
+                if (map.transform.GetChild(i).gameObject.GetComponent<Tile>().isActive) {
+                    indexes.Add(i);
+                    map.transform.GetChild(i).gameObject.GetComponent<Tile>().active.GetComponent<Animator>().Play("FadeOff");
+                    yield return new WaitForSeconds(0.25f);
+                    map.transform.GetChild(i).gameObject.GetComponent<Tile>().isActive = false;
+                }
+            }
+        }
+
+        // A
+        for (int i=0; i<indexes.Count; i++) {
+            Tile child_tile = map.transform.GetChild(indexes[i]).gameObject.GetComponent<Tile>();
+            if (isActive) {
+
+            } else {
+                child_tile.active.GetComponent<Animator>().Play("FadeOff");
+                yield return new WaitForSeconds(speed);
+            }
+
+            child_tile.isActive = isActive;
+            yield return new WaitForSeconds(speed);
+        }
+
+        if (isActive) {
+            StartAction();
+        } else {
+            Debug.Log("ActivateMap");
+            // OnTurnEnded();
+            StartCoroutine(ResolveMap());
+        }
+
+    }
+
     /*
     * Events
     */
-    public void OnTurnEnded() {
-        StartCoroutine(ResolveMap());
+    public void OnTurnEnded(GameObject unit) {
+        Debug.Log("TURN.ONTURNENDED");
+
+        StartCoroutine(ActivateMap(false));
+    }
+
+
+    public void OnUnitPlaced(GameObject unit) {
+        Debug.Log("OnUnitPlaced...");
+
     }
 
 
@@ -168,6 +220,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
 namespace UnityEngine.EventSystems {
     public interface ITurnEnded : IEventSystemHandler {
-        void OnTurnEnded();
+        void OnTurnEnded(GameObject unit);
     }
 }
