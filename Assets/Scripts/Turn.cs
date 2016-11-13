@@ -100,7 +100,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
                         attacker.transform.localScale = new Vector3(-1f, 1f, 1f);
                     }
 
-                    float speed = 0.25f;
+                    float speed = 0.15f;
                     float timePassed = 0f;
 
                     // Move to the defender
@@ -110,19 +110,19 @@ public class Turn : MonoBehaviour, ITurnEnded {
                         yield return null;
                     }
 
-                    yield return new WaitForSeconds(0.25f);
-
+                    // Create attacking animation
                     GameObject animation = Instantiate(attacking, map.transform.parent);
                     animation.transform.localScale = new Vector3(1f, 1f, 1f);
                     animation.transform.position = attacker.transform.position;
 
+                    // Apply damage
                     defender.GetComponent<Alive>().TakeDamage(attacker.GetComponent<Alive>().attack);
                     if (!defender.GetComponent<Alive>().isAlive) {
                         defender.GetComponent<Image>().sprite = defender.GetComponent<Alive>().dead;
                         defender.GetComponent<Animator>().enabled = false;
                     }
 
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.25f);
 
                     Destroy(animation);
 
@@ -170,20 +170,14 @@ public class Turn : MonoBehaviour, ITurnEnded {
             for (int i=0; i<map.transform.childCount; i++) {
                 if (map.transform.GetChild(i).gameObject.GetComponent<Tile>().isActive) {
                     indexes.Add(i);
-                    map.transform.GetChild(i).gameObject.GetComponent<Tile>().active.GetComponent<Animator>().Play("FadeOff");
-                    yield return new WaitForSeconds(0.25f);
-                    map.transform.GetChild(i).gameObject.GetComponent<Tile>().isActive = false;
                 }
             }
         }
 
-        Debug.Log("Indexes: " + indexes.Count);
         for (int i=0; i<indexes.Count; i++) {
             Tile child_tile = map.transform.GetChild(indexes[i]).gameObject.GetComponent<Tile>();
-            if (isActive) {
-
-            } else {
-                //child_tile.active.GetComponent<Animator>().Play("FadeOff");
+            if (!isActive) {
+                child_tile.active.GetComponent<Animator>().Play("FadeOff");
             }
 
             child_tile.isActive = isActive;
@@ -193,11 +187,8 @@ public class Turn : MonoBehaviour, ITurnEnded {
         if (isActive) {
             StartAction();
         } else {
-            Debug.Log("ActivateMap");
-            // OnTurnEnded();
             StartCoroutine(ResolveMap());
         }
-
     }
 
     /*

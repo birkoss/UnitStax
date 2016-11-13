@@ -68,12 +68,6 @@ public class Map : MonoBehaviour, IUnitPlaced {
         return tiles;
     }
 
-    public void DisableMovement() {
-        for (int i=0; i<transform.childCount; i++) {
-            transform.GetChild(i).gameObject.GetComponent<Tile>().isActive = false;
-        }
-    }
-
 
     public List<Action> GetActions() {
         List<Action> actions = new List<Action>();
@@ -149,9 +143,6 @@ public class Map : MonoBehaviour, IUnitPlaced {
     public void OnUnitPlaced(GameObject unit) {
         unit.GetComponent<Animator>().enabled = true;
         unit.GetComponent<DragHandler>().enabled = false;
-        Debug.Log("Map.OnUnitPlaced...");
-        //DisableMovement();
-        // StartCoroutine(DeactivateTiles());
     }
 }
 
