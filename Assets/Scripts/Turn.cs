@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Turn : MonoBehaviour, ITurnEnded {
 
     public GameObject map;
     public GameObject cards;
+
+    public GameObject attacking;
 
     public GameObject sprite;
 
@@ -77,42 +80,61 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
         Debug.Log("Resolve combat");
 
-        Dictionary<GameObject, GameObject> actions = map.GetComponent<Map>().GetActions();
+        List<Action> actions = map.GetComponent<Map>().GetActions();
 
         if (actions.Count>0) {
-            foreach (KeyValuePair<GameObject, GameObject> entry in actions) {
-                GameObject attacker = entry.Key.transform.GetChild(2).gameObject;
+            for (int i=0; i<actions.Count; i++) {
+                GameObject attacker = actions[i].unit.transform.GetChild(2).gameObject;
+                GameObject defender = actions[i].target.transform.GetChild(2).gameObject;
 
-                Vector3 endPosition = entry.Value.transform.GetChild(2).transform.position;
-                Vector3 startPosition = attacker.transform.position;
+                if (attacker.GetComponent<Alive>().isAlive) {
+                    Vector3 endPosition = defender.transform.position;
+                    Vector3 startPosition = attacker.transform.position;
 
-                // Put the attacker temporary on top
-                attacker.transform.SetParent(map.transform.parent);
+                    // Put the attacker temporary on top
+                    attacker.transform.SetParent(map.transform.parent);
 
-                float speed = 0.25f;
-                float timePassed = 0f;
+                    float speed = 0.25f;
+                    float timePassed = 0f;
 
-                // Move to the defender
-                while (timePassed < speed) {
-                    attacker.transform.position = Vector3.Lerp(startPosition, endPosition, (timePassed / speed));
-                    timePassed += Time.deltaTime;
-                    yield return null;
+                    // Move to the defender
+                    while (timePassed < speed) {
+                        attacker.transform.position = Vector3.Lerp(startPosition, endPosition, (timePassed / speed));
+                        timePassed += Time.deltaTime;
+                        yield return null;
+                    }
+
+                    yield return new WaitForSeconds(0.25f);
+
+                    GameObject animation = Instantiate(attacking, map.transform.parent);
+                    animation.transform.localScale = new Vector3(1f, 1f, 1f);
+                    animation.transform.position = attacker.transform.position;
+
+                    defender.GetComponent<Alive>().TakeDamage(attacker.GetComponent<Alive>().attack);
+                    if (!defender.GetComponent<Alive>().isAlive) {
+                        defender.GetComponent<Image>().sprite = defender.GetComponent<Alive>().dead;
+                        defender.GetComponent<Animator>().enabled = false;
+                    }
+
+                    yield return new WaitForSeconds(0.5f);
+
+                    Destroy(animation);
+
+                    // Move the attacker back to it's starting position
+                    timePassed = 0f;
+                    while (timePassed < speed) {
+                        attacker.transform.position = Vector3.Lerp(endPosition, startPosition, (timePassed / speed));
+                        timePassed += Time.deltaTime;
+                        yield return null;
+                    }
+
+                    // Restore the attacker's position to a tile
+                    attacker.transform.SetParent(actions[i].unit.transform);
+
+                    yield return new WaitForSeconds(0.25f);
+
+                    map.GetComponent<Map>().Clean();
                 }
-
-                yield return new WaitForSeconds(0.25f);
-
-                // Move the attacker back to it's starting position
-                timePassed = 0f;
-                while (timePassed < speed) {
-                    attacker.transform.position = Vector3.Lerp(endPosition, startPosition, (timePassed / speed));
-                    timePassed += Time.deltaTime;
-                    yield return null;
-                }
-
-                // Restore the attacker's position to a tile
-                attacker.transform.SetParent(entry.Key.transform);
-
-                yield return new WaitForSeconds(0.25f);
             }
         }
 

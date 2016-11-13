@@ -77,31 +77,33 @@ public class Map : MonoBehaviour, IUnitPlaced {
     }
 
 
-    public Dictionary<GameObject, GameObject> GetActions() {
-        Dictionary<GameObject, GameObject> actions = new Dictionary<GameObject, GameObject>();
+    public List<Action> GetActions() {
+        List<Action> actions = new List<Action>();
 
         for (int i=0; i<transform.childCount; i++) {
             GameObject tile = transform.GetChild(i).gameObject;
             if (!tile.GetComponent<Tile>().isEmpty) {
-                var tilePlayer = tile.transform.GetChild(2).GetComponent<Alive>().player;
+                if (tile.transform.GetChild(2).GetComponent<Alive>().isAlive) {
 
-                List<GameObject> enemies = new List<GameObject>();
-                List<int> indexes = GetNeighboors(tile.GetComponent<Tile>().position);
-                GameObject otherTile;
-                for (int j=0; j<indexes.Count; j++) {
-                    otherTile = transform.GetChild(indexes[j]).gameObject;
-                    if (!otherTile.GetComponent<Tile>().isEmpty && otherTile.transform.GetChild(2).GetComponent<Alive>().player != tilePlayer) {
-                        enemies.Add(otherTile);
+                    var tilePlayer = tile.transform.GetChild(2).GetComponent<Alive>().player;
+
+                    List<GameObject> enemies = new List<GameObject>();
+                    List<int> indexes = GetNeighboors(tile.GetComponent<Tile>().position);
+                    GameObject otherTile;
+                    for (int j=0; j<indexes.Count; j++) {
+                        otherTile = transform.GetChild(indexes[j]).gameObject;
+                        if (!otherTile.GetComponent<Tile>().isEmpty && otherTile.transform.GetChild(2).GetComponent<Alive>().player != tilePlayer) {
+                            enemies.Add(otherTile);
+                        }
+                    }
+
+                    if (enemies.Count > 0) {
+                        Debug.Log("Put back 2 here...");
+                        for (int j=0; j<enemies.Count; j++) {
+                            actions.Add(new Action("attack", enemies[j], tile));
+                        }
                     }
                 }
-
-                if (enemies.Count > 0) {
-                    Debug.Log("Put back 2 here...");
-                    for (int j=0; j<enemies.Count; j++) {
-                        actions.Add(enemies[j], tile);
-                    }
-                }
-
 
             }
         }
@@ -128,6 +130,18 @@ public class Map : MonoBehaviour, IUnitPlaced {
         }
 
         return indexes;
+    }
+
+
+    public void Clean() {
+        for (int i=0; i<transform.childCount; i++) {
+            GameObject tile = transform.GetChild(i).gameObject;
+            if (!tile.GetComponent<Tile>().isEmpty) {
+                if (!tile.transform.GetChild(2).GetComponent<Alive>().isAlive) {
+                    Destroy(tile.transform.GetChild(2).gameObject);
+                }
+            }
+        }
     }
 
     /*
