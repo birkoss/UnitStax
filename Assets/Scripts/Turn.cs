@@ -35,7 +35,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
     private void StartAction() {
         if (currentPlayer == 0) {
-            cards.SetActive(true);
+            cards.GetComponent<Cards>().Show();
         } else {
             StartCoroutine(AI());
         }
@@ -43,7 +43,8 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
     private void End() {
         Debug.Log("End...");
-        cards.SetActive(false);
+        // cards.SetActive(false);
+        cards.GetComponent<Cards>().Hide();
 
         currentPlayer ^= 1;
 
@@ -94,6 +95,11 @@ public class Turn : MonoBehaviour, ITurnEnded {
                     // Put the attacker temporary on top
                     attacker.transform.SetParent(map.transform.parent);
 
+                    // Face correctly to the defender
+                    if (endPosition.x > startPosition.x) {
+                        attacker.transform.localScale = new Vector3(-1f, 1f, 1f);
+                    }
+
                     float speed = 0.25f;
                     float timePassed = 0f;
 
@@ -119,6 +125,11 @@ public class Turn : MonoBehaviour, ITurnEnded {
                     yield return new WaitForSeconds(0.5f);
 
                     Destroy(animation);
+
+                    // Face back before returning to our tile
+                    if (endPosition.x > startPosition.x) {
+                        attacker.transform.localScale = new Vector3(1f, 1f, 1f);
+                    }
 
                     // Move the attacker back to it's starting position
                     timePassed = 0f;

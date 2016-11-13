@@ -5,6 +5,7 @@ using UnityEngine;
 public class Cards : MonoBehaviour {
 
 	void Awake () {
+
         // Create the remaining hands
         for (int i=1; i<5; i++) {
             Instantiate(transform.GetChild(0).gameObject, transform);
@@ -17,5 +18,13 @@ public class Cards : MonoBehaviour {
             transform.GetChild(i).gameObject.GetComponent<Animator>().enabled = false;
         }
 	}
+
+    public void Hide() {
+        GetComponent<Animator>().Play("Hide");
+    }
+
+    public void Show() {
+        GetComponent<Animator>().Play("Show");
+    }
 
 }
