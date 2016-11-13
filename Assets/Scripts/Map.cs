@@ -60,7 +60,9 @@ public class Map : MonoBehaviour, IUnitPlaced {
         // Get all neighboors
         List<int> neighboors = GetNeighboors(transform.GetChild(tiles[0]).gameObject.GetComponent<Tile>().position);
         for (int i=0; i<neighboors.Count; i++) {
-            tiles.Add(neighboors[i]);
+            if (transform.GetChild(neighboors[i]).gameObject.GetComponent<Tile>().isEmpty) {
+                tiles.Add(neighboors[i]);
+            }
         }
 
         return tiles;

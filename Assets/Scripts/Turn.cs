@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Turn : MonoBehaviour, ITurnEnded, IUnitPlaced {
+public class Turn : MonoBehaviour, ITurnEnded {
 
     public GameObject map;
     public GameObject cards;
@@ -34,6 +34,8 @@ public class Turn : MonoBehaviour, ITurnEnded, IUnitPlaced {
     }
 
     private void StartAction() {
+        Debug.Log("StartAction()");
+
         if (currentPlayer == 0) {
             cards.GetComponent<Cards>().Show();
         } else {
@@ -42,7 +44,7 @@ public class Turn : MonoBehaviour, ITurnEnded, IUnitPlaced {
     }
 
     private void End() {
-        Debug.Log("End...");
+        Debug.Log("End()");
         // cards.SetActive(false);
         cards.GetComponent<Cards>().Hide();
 
@@ -71,16 +73,13 @@ public class Turn : MonoBehaviour, ITurnEnded, IUnitPlaced {
         unit.transform.localScale = new Vector3(1f, 1f, 1f);
         unit.GetComponent<Alive>().player = 1;
 
-        Debug.Log("Before event...");
-
         // map.GetComponent<Map>().OnUnitPlaced(unit);
         OnTurnEnded(unit);
     }
 
 
     private IEnumerator ResolveMap() {
-
-        Debug.Log("Resolve combat");
+        Debug.Log("ResolveMap()");
 
         List<Action> actions = map.GetComponent<Map>().GetActions();
 
@@ -159,6 +158,8 @@ public class Turn : MonoBehaviour, ITurnEnded, IUnitPlaced {
 
 
     private IEnumerator ActivateMap(bool isActive = true) {
+        Debug.Log("ActivateMap(" + isActive + ")");
+
         float speed = 0.25f;
 
         List<int> indexes = new List<int>();
@@ -176,14 +177,13 @@ public class Turn : MonoBehaviour, ITurnEnded, IUnitPlaced {
             }
         }
 
-        // A
+        Debug.Log("Indexes: " + indexes.Count);
         for (int i=0; i<indexes.Count; i++) {
             Tile child_tile = map.transform.GetChild(indexes[i]).gameObject.GetComponent<Tile>();
             if (isActive) {
 
             } else {
-                child_tile.active.GetComponent<Animator>().Play("FadeOff");
-                yield return new WaitForSeconds(speed);
+                //child_tile.active.GetComponent<Animator>().Play("FadeOff");
             }
 
             child_tile.isActive = isActive;
@@ -204,18 +204,10 @@ public class Turn : MonoBehaviour, ITurnEnded, IUnitPlaced {
     * Events
     */
     public void OnTurnEnded(GameObject unit) {
-        Debug.Log("TURN.ONTURNENDED");
+        Debug.Log("OnTurnEnded(" + unit + ")");
 
         StartCoroutine(ActivateMap(false));
     }
-
-
-    public void OnUnitPlaced(GameObject unit) {
-        Debug.Log("OnUnitPlaced...");
-
-    }
-
-
 }
 
 namespace UnityEngine.EventSystems {
