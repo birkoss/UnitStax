@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class Map : MonoBehaviour, IUnitPlaced {
 
     private int rows = 6;
-    private int cols = 3;
+    private int cols = 6;
 
 
     public GameObject[] active {

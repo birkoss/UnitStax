@@ -14,8 +14,9 @@ public class Cards : MonoBehaviour {
         // Set the correct name
         for (int i=0; i<transform.childCount; i++) {
             transform.GetChild(i).name = "card_" + i;
-            transform.GetChild(i).gameObject.GetComponent<Card>().unit.GetComponent<Animator>().enabled = false;
-            transform.GetChild(i).gameObject.GetComponent<Animator>().enabled = false;
+            GameObject card = transform.GetChild(i).gameObject;
+            card.GetComponent<Animator>().enabled = false;
+            card.GetComponent<Card>().Init("peon");
         }
 	}
 
@@ -24,6 +25,15 @@ public class Cards : MonoBehaviour {
     }
 
     public void Show() {
+        // Verify to always have the right amount of cards
+        for (int i=0; i<transform.childCount; i++) {
+            GameObject card = transform.GetChild(i).gameObject;
+            Debug.Log(i + " : " + card.GetComponent<CanvasGroup>().alpha);
+            if (card.GetComponent<CanvasGroup>().alpha <= 0) {
+                card.GetComponent<Card>().Init("peon");
+            }
+        }
+
         GetComponent<Animator>().Play("Show");
     }
 
