@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Alive : MonoBehaviour {
+public class Unit : MonoBehaviour {
 
     public int maxHealth;
     public int attack;

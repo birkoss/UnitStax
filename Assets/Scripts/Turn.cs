@@ -69,7 +69,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
         GameObject unit = Instantiate(PrefabManager.Instance.Get("skeleton"), tile.transform);
         unit.transform.localPosition = Vector3.zero;
         unit.transform.localScale = new Vector3(1f, 1f, 1f);
-        unit.GetComponent<Alive>().player = 1;
+        unit.GetComponent<Unit>().player = 1;
 
         OnTurnEnded(unit);
     }
@@ -85,7 +85,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
                 GameObject attacker = actions[i].unit.transform.GetChild(2).gameObject;
                 GameObject defender = actions[i].target.transform.GetChild(2).gameObject;
 
-                if (attacker.GetComponent<Alive>().isAlive) {
+                if (attacker.GetComponent<Unit>().isAlive) {
                     Vector3 endPosition = defender.transform.position;
                     Vector3 startPosition = attacker.transform.position;
 
@@ -113,9 +113,9 @@ public class Turn : MonoBehaviour, ITurnEnded {
                     animation.transform.position = attacker.transform.position;
 
                     // Apply damage
-                    defender.GetComponent<Alive>().TakeDamage(attacker.GetComponent<Alive>().attack);
-                    if (!defender.GetComponent<Alive>().isAlive) {
-                        defender.GetComponent<Image>().sprite = defender.GetComponent<Alive>().dead;
+                    defender.GetComponent<Unit>().TakeDamage(attacker.GetComponent<Unit>().attack);
+                    if (!defender.GetComponent<Unit>().isAlive) {
+                        defender.GetComponent<Image>().sprite = defender.GetComponent<Unit>().dead;
                         defender.GetComponent<Animator>().enabled = false;
                     }
 

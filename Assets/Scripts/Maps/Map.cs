@@ -87,16 +87,16 @@ public class Map : MonoBehaviour, IUnitPlaced {
         for (int i=0; i<transform.childCount; i++) {
             GameObject tile = transform.GetChild(i).gameObject;
             if (!tile.GetComponent<Tile>().isEmpty) {
-                if (tile.transform.GetChild(2).GetComponent<Alive>().isAlive) {
+                if (tile.transform.GetChild(2).GetComponent<Unit>().isAlive) {
 
-                    var tilePlayer = tile.transform.GetChild(2).GetComponent<Alive>().player;
+                    var tilePlayer = tile.transform.GetChild(2).GetComponent<Unit>().player;
 
                     List<GameObject> enemies = new List<GameObject>();
                     List<int> indexes = GetNeighboors(tile.GetComponent<Tile>().position);
                     GameObject otherTile;
                     for (int j=0; j<indexes.Count; j++) {
                         otherTile = transform.GetChild(indexes[j]).gameObject;
-                        if (!otherTile.GetComponent<Tile>().isEmpty && otherTile.transform.GetChild(2).GetComponent<Alive>().player != tilePlayer) {
+                        if (!otherTile.GetComponent<Tile>().isEmpty && otherTile.transform.GetChild(2).GetComponent<Unit>().player != tilePlayer) {
                             enemies.Add(otherTile);
                         }
                     }
@@ -141,7 +141,7 @@ public class Map : MonoBehaviour, IUnitPlaced {
         for (int i=0; i<transform.childCount; i++) {
             GameObject tile = transform.GetChild(i).gameObject;
             if (!tile.GetComponent<Tile>().isEmpty) {
-                if (!tile.transform.GetChild(2).GetComponent<Alive>().isAlive) {
+                if (!tile.transform.GetChild(2).GetComponent<Unit>().isAlive) {
                     Destroy(tile.transform.GetChild(2).gameObject);
                 }
             }

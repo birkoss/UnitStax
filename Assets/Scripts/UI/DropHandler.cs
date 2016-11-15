@@ -24,7 +24,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 
             DragHandler.itemBeginDragged.transform.SetParent(transform);
             DragHandler.itemBeginDragged.transform.localPosition = new Vector3(0f, 0f, 0f);
-            DragHandler.itemBeginDragged.GetComponent<Alive>().player = 0;
+            DragHandler.itemBeginDragged.GetComponent<Unit>().player = 0;
             DragHandler.itemBeginDragged.GetComponent<Animator>().enabled = true;
 
 DragHandler.itemBeginDragged.GetComponent<DragHandler>().enabled = false;
