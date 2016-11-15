@@ -46,7 +46,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
     private void End() {
         Debug.Log("End()");
         // cards.SetActive(false);
-        cards.GetComponent<Cards>().Hide();
+
 
         currentPlayer ^= 1;
 
@@ -193,6 +193,8 @@ public class Turn : MonoBehaviour, ITurnEnded {
     */
     public void OnTurnEnded(GameObject unit) {
         Debug.Log("OnTurnEnded(" + unit + ")");
+
+        cards.GetComponent<Cards>().Hide();
 
         StartCoroutine(ActivateMap(Fight));
     }
