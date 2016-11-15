@@ -27,13 +27,10 @@ public class Turn : MonoBehaviour, ITurnEnded {
     * Methods
     */
     private void Begin() {
-        Debug.Log("Begin: " + currentPlayer);
         StartAction();
     }
 
     private void StartAction() {
-        Debug.Log("StartAction()");
-
         if (currentPlayer == 0) {
             cards.GetComponent<Cards>().Show();
         } else {
@@ -42,10 +39,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
     }
 
     private void End() {
-        Debug.Log("End()");
-        // cards.SetActive(false);
-
-
         currentPlayer ^= 1;
 
         Begin();
@@ -71,13 +64,12 @@ public class Turn : MonoBehaviour, ITurnEnded {
         unit.transform.localScale = new Vector3(1f, 1f, 1f);
         unit.GetComponent<Unit>().player = 1;
 
+        map.GetComponent<Map>().OnUnitPlaced(unit);
         OnTurnEnded(unit);
     }
 
 
     private IEnumerator ResolveMap() {
-        Debug.Log("ResolveMap()");
-
         List<Action> actions = map.GetComponent<Map>().GetActions();
 
         if (actions.Count>0) {
@@ -85,7 +77,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
                 GameObject attacker = actions[i].unit.transform.GetChild(2).gameObject;
                 GameObject defender = actions[i].target.transform.GetChild(2).gameObject;
 
-                if (attacker.GetComponent<Unit>().isAlive) {
+                if (attacker.GetComponent<Unit>().isAlive && defender.GetComponent<Unit>().isAlive) {
                     Vector3 endPosition = defender.transform.position;
                     Vector3 startPosition = attacker.transform.position;
 
@@ -157,8 +149,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
 
     private IEnumerator ActivateMap(Callback callback) {
-        Debug.Log("ActivateMap(" +  ")");
-
         float speed = 0.25f;
 
         List<int> indexes = map.GetComponent<Map>().GetTilesAvailable();
@@ -190,8 +180,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
     * Events
     */
     public void OnTurnEnded(GameObject unit) {
-        Debug.Log("OnTurnEnded(" + unit + ")");
-
         cards.GetComponent<Cards>().Hide();
 
         StartCoroutine(ActivateMap(Fight));

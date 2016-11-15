@@ -15,8 +15,6 @@ public class DropHandler : MonoBehaviour, IDropHandler {
     }
 
     public void OnDrop(PointerEventData eventData) {
-        Debug.Log("OnDrop");
-
         Tile tile = GetComponent<Tile>();
         if (tile == null || (tile.isEmpty && tile.isEnable) ) {
             GameObject card = DragHandler.itemBeginDragged.transform.parent.parent.gameObject;
@@ -30,7 +28,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
 DragHandler.itemBeginDragged.GetComponent<DragHandler>().enabled = false;
 
             ExecuteEvents.ExecuteHierarchy<ITurnEnded>(gameObject, null, (x,y) => x.OnTurnEnded(DragHandler.itemBeginDragged));
-            // ExecuteEvents.ExecuteHierarchy<IUnitPlaced>(gameObject, null, (x,y) => x.OnUnitPlaced(DragHandler.itemBeginDragged));
+            ExecuteEvents.ExecuteHierarchy<IUnitPlaced>(gameObject, null, (x,y) => x.OnUnitPlaced(DragHandler.itemBeginDragged));
         }
     }
 }

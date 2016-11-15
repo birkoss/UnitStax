@@ -26,7 +26,6 @@ public class DragHandler : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        Debug.Log("OnEndDrag");
         itemBeginDragged = null;
 
         if (transform.parent == startParent) {

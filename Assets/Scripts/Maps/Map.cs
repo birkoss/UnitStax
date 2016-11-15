@@ -8,6 +8,8 @@ public class Map : MonoBehaviour, IUnitPlaced {
     private int rows = 6;
     private int cols = 6;
 
+    private List<int> units;
+
 
     public GameObject[] available {
         get {
@@ -26,6 +28,8 @@ public class Map : MonoBehaviour, IUnitPlaced {
     * Unity
     */
 	void Awake () {
+        units = new List<int>();
+
         // Create remaining tiles
         for (int i=1; i<(rows * cols); i++) {
             Instantiate(transform.GetChild(0).gameObject, transform);
@@ -84,8 +88,9 @@ public class Map : MonoBehaviour, IUnitPlaced {
     public List<Action> GetActions() {
         List<Action> actions = new List<Action>();
 
-        for (int i=0; i<transform.childCount; i++) {
-            GameObject tile = transform.GetChild(i).gameObject;
+        for (int i=units.Count - 1; i>=0; i--) {
+            int index = units[i];
+            GameObject tile = transform.GetChild(index).gameObject;
             if (!tile.GetComponent<Tile>().isEmpty) {
                 if (tile.transform.GetChild(2).GetComponent<Unit>().isAlive) {
 
@@ -104,7 +109,8 @@ public class Map : MonoBehaviour, IUnitPlaced {
                     if (enemies.Count > 0) {
                         Debug.Log("Put back 2 here...");
                         for (int j=0; j<enemies.Count; j++) {
-                            actions.Add(new Action("attack", enemies[j], tile));
+                            // actions.Add(new Action("attack", enemies[j], tile));
+                            actions.Add(new Action("attack", tile, enemies[j]));
                         }
                     }
                 }
@@ -143,6 +149,7 @@ public class Map : MonoBehaviour, IUnitPlaced {
             if (!tile.GetComponent<Tile>().isEmpty) {
                 if (!tile.transform.GetChild(2).GetComponent<Unit>().isAlive) {
                     Destroy(tile.transform.GetChild(2).gameObject);
+                    units.Remove(i);
                 }
             }
         }
@@ -153,8 +160,13 @@ public class Map : MonoBehaviour, IUnitPlaced {
     * Events
     */
     public void OnUnitPlaced(GameObject unit) {
-        unit.GetComponent<Animator>().enabled = true;
-        unit.GetComponent<DragHandler>().enabled = false;
+        //unit.GetComponent<Animator>().enabled = true;
+        //unit.GetComponent<DragHandler>().enabled = false;
+        Debug.Log(unit.transform.parent);
+
+        GameObject tile = unit.transform.parent.gameObject;
+        int index = (int)((tile.GetComponent<Tile>().position.y * rows) + tile.GetComponent<Tile>().position.x);
+        units.Add(index);
     }
 }
 
