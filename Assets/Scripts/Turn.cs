@@ -15,13 +15,13 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
     private int currentPlayer = 0;
 
-    public delegate void CallBack();
+    public delegate void Callback();
 
     /*
     * Unity
     */
 	void Start () {
-                StartCoroutine(ActivateMap(Begin));
+        StartCoroutine(ActivateMap(Begin));
 	}
 
 
@@ -73,7 +73,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
         unit.transform.localScale = new Vector3(1f, 1f, 1f);
         unit.GetComponent<Alive>().player = 1;
 
-        // map.GetComponent<Map>().OnUnitPlaced(unit);
         OnTurnEnded(unit);
     }
 
@@ -159,32 +158,25 @@ public class Turn : MonoBehaviour, ITurnEnded {
     }
 
 
-    private IEnumerator ActivateMap(CallBack callback) {
+    private IEnumerator ActivateMap(Callback callback) {
         Debug.Log("ActivateMap(" +  ")");
 
         float speed = 0.25f;
 
-        List<int> indexes = new List<int>();
+        List<int> indexes = map.GetComponent<Map>().GetTilesAvailable();
 
-        indexes = map.GetComponent<Map>().GetTilesAvailable();
-
+        // If no new indexes are to enabled, add a little delay
         if (indexes.Count == 0) {
             yield return new WaitForSeconds(speed);
         }
 
         for (int i=0; i<indexes.Count; i++) {
-            Debug.Log("I:" + i + "indexes: " + indexes[i]);
             Tile child_tile = map.transform.GetChild(indexes[i]).gameObject.GetComponent<Tile>();
 
             child_tile.isEnable = true;
-
             while (!child_tile.active.GetComponent<AnimationHandler>().isDone) {
                 yield return null;
             }
-
-
-            // Debug.Log(child_tile.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("isEnable"));
-            // yield return new WaitForSeconds(speed);
 
             yield return new WaitForSeconds(speed);
         }
@@ -203,7 +195,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
         Debug.Log("OnTurnEnded(" + unit + ")");
 
         StartCoroutine(ActivateMap(Fight));
-        // StartCoroutine(ResolveMap());
     }
 }
 
