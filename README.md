@@ -54,6 +54,13 @@ TODO
  * Using a Gambit System similar to FF12, syntax: Target: Action ? Treshold, ex:
   * Ally: heal < 50%
   * Foe: Attack < 10%
+  
+* Different Map Tile
+ * Some tile should be not walkable
+ * Some tile should give bonuses
+ 
+* Unit around
+ * When a unit from the same player is near, some bonus should happen (it: when 2 or more peons are adjacent, they all get a +X to health, where X is 2 * number of peons)
 
 Levelup formula (from Disgaea)
 ==============================
