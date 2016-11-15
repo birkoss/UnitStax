@@ -14,11 +14,6 @@ public class Tile : MonoBehaviour {
         get { return (transform.childCount == 2); }
     }
 
-    public bool isActive {
-        get { return active.activeSelf; }
-        set { active.SetActive(value); }
-    }
-
     public bool isEnable {
         get { return active.GetComponent<Animator>().GetBool("isEnable"); }
         set { active.GetComponent<Animator>().SetBool("isEnable", true); }
