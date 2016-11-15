@@ -21,7 +21,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
     * Unity
     */
 	void Start () {
-        Begin();
+                StartCoroutine(ActivateMap(Begin));
 	}
 
 
@@ -30,7 +30,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
     */
     private void Begin() {
         Debug.Log("Begin: " + currentPlayer);
-        StartCoroutine(ActivateMap());
+        StartAction();
     }
 
     private void StartAction() {
@@ -62,7 +62,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
         yield return new WaitForSeconds(0.5f);
 
         // Get all active tiles
-        GameObject[] tiles = map.GetComponent<Map>().active;
+        GameObject[] tiles = map.GetComponent<Map>().available;
 
         // Select an active tile
         GameObject tile = tiles[Random.Range(0, tiles.Length-1)];
@@ -138,6 +138,8 @@ public class Turn : MonoBehaviour, ITurnEnded {
                         timePassed += Time.deltaTime;
                         yield return null;
                     }
+                    attacker.transform.position = startPosition;
+
 
                     // Restore the attacker's position to a tile
                     attacker.transform.SetParent(actions[i].unit.transform);
@@ -157,38 +159,41 @@ public class Turn : MonoBehaviour, ITurnEnded {
     }
 
 
-    private IEnumerator ActivateMap(bool isActive = true) {
-        Debug.Log("ActivateMap(" + isActive + ")");
+    private IEnumerator ActivateMap(CallBack callback) {
+        Debug.Log("ActivateMap(" +  ")");
 
         float speed = 0.25f;
 
         List<int> indexes = new List<int>();
 
-        if (isActive) {
-            indexes = map.GetComponent<Map>().GetTilesAvailable();
-        } else {
-            for (int i=0; i<map.transform.childCount; i++) {
-                if (map.transform.GetChild(i).gameObject.GetComponent<Tile>().isActive) {
-                    indexes.Add(i);
-                }
-            }
-        }
+        indexes = map.GetComponent<Map>().GetTilesAvailable();
 
-        for (int i=0; i<indexes.Count; i++) {
-            Tile child_tile = map.transform.GetChild(indexes[i]).gameObject.GetComponent<Tile>();
-            if (!isActive) {
-                child_tile.active.GetComponent<Animator>().Play("FadeOff");
-            }
-
-            child_tile.isActive = isActive;
+        if (indexes.Count == 0) {
             yield return new WaitForSeconds(speed);
         }
 
-        if (isActive) {
-            StartAction();
-        } else {
-            StartCoroutine(ResolveMap());
+        for (int i=0; i<indexes.Count; i++) {
+            Debug.Log("I:" + i + "indexes: " + indexes[i]);
+            Tile child_tile = map.transform.GetChild(indexes[i]).gameObject.GetComponent<Tile>();
+
+            child_tile.isEnable = true;
+
+            while (!child_tile.active.GetComponent<AnimationHandler>().isDone) {
+                yield return null;
+            }
+
+
+            // Debug.Log(child_tile.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("isEnable"));
+            // yield return new WaitForSeconds(speed);
+
+            yield return new WaitForSeconds(speed);
         }
+
+        callback();
+    }
+
+    public void Fight() {
+        StartCoroutine(ResolveMap());
     }
 
     /*
@@ -197,7 +202,8 @@ public class Turn : MonoBehaviour, ITurnEnded {
     public void OnTurnEnded(GameObject unit) {
         Debug.Log("OnTurnEnded(" + unit + ")");
 
-        StartCoroutine(ActivateMap(false));
+        StartCoroutine(ActivateMap(Fight));
+        // StartCoroutine(ResolveMap());
     }
 }
 

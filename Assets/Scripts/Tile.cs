@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class Tile : MonoBehaviour {
 
-    private GameObject floor;
     public GameObject active;
+
+    private GameObject floor;
     private Vector2 tilePosition;
 
     public bool isEmpty {
@@ -16,6 +17,11 @@ public class Tile : MonoBehaviour {
     public bool isActive {
         get { return active.activeSelf; }
         set { active.SetActive(value); }
+    }
+
+    public bool isEnable {
+        get { return active.GetComponent<Animator>().GetBool("isEnable"); }
+        set { active.GetComponent<Animator>().SetBool("isEnable", true); }
     }
 
     public Vector2 position {
@@ -28,7 +34,8 @@ public class Tile : MonoBehaviour {
     */
     public void Awake() {
         floor = transform.GetChild(0).gameObject;
-        active = transform.GetChild(1).gameObject;
+
+
     }
 
 }

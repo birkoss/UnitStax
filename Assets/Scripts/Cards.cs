@@ -28,7 +28,6 @@ public class Cards : MonoBehaviour {
         // Verify to always have the right amount of cards
         for (int i=0; i<transform.childCount; i++) {
             GameObject card = transform.GetChild(i).gameObject;
-            Debug.Log(i + " : " + card.GetComponent<CanvasGroup>().alpha);
             if (card.GetComponent<CanvasGroup>().alpha <= 0) {
                 card.GetComponent<Card>().Init("peon");
             }

@@ -9,11 +9,11 @@ public class Map : MonoBehaviour, IUnitPlaced {
     private int cols = 6;
 
 
-    public GameObject[] active {
+    public GameObject[] available {
         get {
             List<GameObject> tiles = new List<GameObject>();
             for (int i=0; i<transform.childCount; i++) {
-                if (transform.GetChild(i).gameObject.GetComponent<Tile>().isActive) {
+                if (transform.GetChild(i).gameObject.GetComponent<Tile>().isEnable && transform.GetChild(i).gameObject.GetComponent<Tile>().isEmpty) {
                     tiles.Add(transform.GetChild(i).gameObject);
                 }
             }
@@ -44,24 +44,36 @@ public class Map : MonoBehaviour, IUnitPlaced {
     /*
     * Methods
     */
-    public List<int> GetTilesAvailable(bool isEmpty = true) {
+    public List<int> GetTilesAvailable() {
         List<int> tiles = new List<int>();
+
+        bool isEmpty = true;
+
+        List<int> neighboors;
 
         List<int> indexes = new List<int>();
         for (int i=0; i<transform.childCount; i++) {
-            if (transform.GetChild(i).gameObject.GetComponent<Tile>().isEmpty) {
-                indexes.Add(i);
+            if (!transform.GetChild(i).gameObject.GetComponent<Tile>().isEmpty) {
+                isEmpty = false;
+                neighboors = GetNeighboors(transform.GetChild(i).gameObject.GetComponent<Tile>().position);
+                for (int j=0; j<neighboors.Count; j++) {
+                    GameObject tile = transform.GetChild(neighboors[j]).gameObject;
+                    if (tile.GetComponent<Tile>().isEmpty && !tile.GetComponent<Tile>().isEnable) {
+                        tiles.Add(neighboors[j]);
+                    }
+                }
             }
         }
 
-        // Add the main tile
-        tiles.Add(indexes[Random.Range(0, indexes.Count-1)]);
+        if (isEmpty && tiles.Count == 0) {
+            tiles.Add(Random.Range(0, transform.childCount-1));
 
-        // Get all neighboors
-        List<int> neighboors = GetNeighboors(transform.GetChild(tiles[0]).gameObject.GetComponent<Tile>().position);
-        for (int i=0; i<neighboors.Count; i++) {
-            if (transform.GetChild(neighboors[i]).gameObject.GetComponent<Tile>().isEmpty) {
-                tiles.Add(neighboors[i]);
+            // Get all neighboors
+            neighboors = GetNeighboors(transform.GetChild(tiles[0]).gameObject.GetComponent<Tile>().position);
+            for (int i=0; i<neighboors.Count; i++) {
+                if (transform.GetChild(neighboors[i]).gameObject.GetComponent<Tile>().isEmpty) {
+                    tiles.Add(neighboors[i]);
+                }
             }
         }
 
