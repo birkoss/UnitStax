@@ -11,8 +11,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
     public GameObject attacking;
 
-    public GameObject sprite;
-
     private int currentPlayer = 0;
 
     public delegate void Callback();
@@ -68,7 +66,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
         GameObject tile = tiles[Random.Range(0, tiles.Length-1)];
 
         // Place a unit
-        GameObject unit = Instantiate(sprite, tile.transform);
+        GameObject unit = Instantiate(PrefabManager.Instance.Get("skeleton"), tile.transform);
         unit.transform.localPosition = Vector3.zero;
         unit.transform.localScale = new Vector3(1f, 1f, 1f);
         unit.GetComponent<Alive>().player = 1;

@@ -14,7 +14,7 @@ public class Card : MonoBehaviour {
             Destroy(unitContainer.transform.GetChild(i).gameObject);
         }
 
-        unit = Instantiate(Resources.Load("units/" + unit_name) as GameObject, unitContainer.transform);
+        unit = Instantiate(PrefabManager.Instance.Get("peon"), unitContainer.transform);
         unit.transform.localPosition = Vector3.zero;
         unit.transform.localScale = new Vector3(1f, 1f, 1f);
 
