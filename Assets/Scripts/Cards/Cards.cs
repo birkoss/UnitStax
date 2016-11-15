@@ -15,7 +15,7 @@ public class Cards : MonoBehaviour {
         for (int i=0; i<transform.childCount; i++) {
             transform.GetChild(i).name = "card_" + i;
             GameObject card = transform.GetChild(i).gameObject;
-            card.GetComponent<Animator>().enabled = false;
+            // card.GetComponent<Animator>().enabled = false;
             card.GetComponent<Card>().Init("peon");
         }
 	}

@@ -1,9 +1,6 @@
 TODO
 ====
 
-* Uniformized all animations
- * Cards
-
 * Change spritesheets
  * One spritesheet per Unit (Idle animation)
 

@@ -8,7 +8,7 @@ public class Card : MonoBehaviour {
     public GameObject unitContainer;
 
     public void Init(string unit_name) {
-        GetComponent<Animator>().enabled = false;
+        GetComponent<Animator>().SetBool("isEmpty", false);
 
         for (int i=0; i<unitContainer.transform.childCount; i++) {
             Destroy(unitContainer.transform.GetChild(i).gameObject);
@@ -20,12 +20,11 @@ public class Card : MonoBehaviour {
 
         GetComponent<CanvasGroup>().alpha = 1;
 
-        unit.GetComponent<Animator>().enabled = false;
-
         unit.GetComponent<DragHandler>().isDraggable = true;
     }
 
     public void Hide() {
-        GetComponent<Animator>().enabled = true;
+        Debug.Log("hidin...");
+        GetComponent<Animator>().SetBool("isEmpty", true);
     }
 }
