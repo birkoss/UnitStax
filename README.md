@@ -1,18 +1,6 @@
 TODO
 ====
 
-* Combat Resolution
- * Keep a list of every units (in the order they were placed)
- * Resolve the combat from the last unit placed to the first (if still alive)
-
-* DragHandler
- * Use a boolean to hold if it's draggable or not
-  * Not draggable by default (But the card manager will change that)
- * Remove all Pointer Down (move to another class)
-
-* Create a clickHandler
- * Raise an event when clicked (and not dragged)
-
 * Refactor the Turn Controller
  * Begin()
  * StartAction()
@@ -27,16 +15,16 @@ TODO
  * Fight
  * #ResolveMap
  * End()
- 
+
 * Uniformized all animations
  * Cards
 
 * Change spritesheets
  * One spritesheet per Unit (Idle animation)
- 
+
 * Show a health bar over the unit
  * Change the grid size to 5x5 and make the tile bigger than the unit (allowing a health bar)
- 
+
 * Leveling Unit
  * Need X unit killed to levelup (each enemy level give 1 xp)
  * Each level will affect the stats at the same rate
@@ -47,18 +35,18 @@ TODO
   * Unit Name
   * Current Level
   * To Level
-  
+
 * Generate decks (for player and enemy)
 
 * Better AI
  * Using a Gambit System similar to FF12, syntax: Target: Action ? Treshold, ex:
   * Ally: heal < 50%
   * Foe: Attack < 10%
-  
+
 * Different Map Tile
  * Some tile should be not walkable
  * Some tile should give bonuses
- 
+
 * Unit around
  * When a unit from the same player is near, some bonus should happen (it: when 2 or more peons are adjacent, they all get a +X to health, where X is 2 * number of peons)
 

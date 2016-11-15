@@ -149,7 +149,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
 
     private IEnumerator ActivateMap(Callback callback) {
-        float speed = 0.25f;
+        float speed = 0.05f;
 
         List<int> indexes = map.GetComponent<Map>().GetTilesAvailable();
 

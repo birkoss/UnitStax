@@ -21,6 +21,8 @@ public class Card : MonoBehaviour {
         GetComponent<CanvasGroup>().alpha = 1;
 
         unit.GetComponent<Animator>().enabled = false;
+
+        unit.GetComponent<DragHandler>().isDraggable = true;
     }
 
     public void Hide() {

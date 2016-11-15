@@ -3,16 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragHandler : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
     public static GameObject itemBeginDragged;
 
     private Vector3 startPosition;
     private Transform startParent;
 
-    public void OnPointerDown(PointerEventData eventData) {
+    public bool isDraggable {
+        get { return enabled; }
+        set { enabled = value; }
     }
 
+    /*
+    * Unity
+    */
+    public void Awake() {
+        isDraggable = false;
+    }
+
+    /*
+    * Events
+    */
     public void OnBeginDrag(PointerEventData eventData) {
         itemBeginDragged = gameObject;
         GetComponent<CanvasGroup>().blocksRaycasts = false;

@@ -25,7 +25,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
             DragHandler.itemBeginDragged.GetComponent<Unit>().player = 0;
             DragHandler.itemBeginDragged.GetComponent<Animator>().enabled = true;
 
-DragHandler.itemBeginDragged.GetComponent<DragHandler>().enabled = false;
+            DragHandler.itemBeginDragged.GetComponent<DragHandler>().isDraggable = false;
 
             ExecuteEvents.ExecuteHierarchy<ITurnEnded>(gameObject, null, (x,y) => x.OnTurnEnded(DragHandler.itemBeginDragged));
             ExecuteEvents.ExecuteHierarchy<IUnitPlaced>(gameObject, null, (x,y) => x.OnUnitPlaced(DragHandler.itemBeginDragged));
