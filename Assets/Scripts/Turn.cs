@@ -19,7 +19,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
     * Unity
     */
 	void Start () {
-        StartCoroutine(ActivateMap(Begin));
+        StartCoroutine(EnableTiles(Begin));
 	}
 
 
@@ -27,10 +27,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
     * Methods
     */
     private void Begin() {
-        StartAction();
-    }
-
-    private void StartAction() {
         if (currentPlayer == 0) {
             cards.GetComponent<Cards>().Show();
         } else {
@@ -40,8 +36,11 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
     private void End() {
         currentPlayer ^= 1;
-
         Begin();
+    }
+
+    public void ResolveMap() {
+        StartCoroutine(ExecuteActions());
     }
 
 
@@ -69,7 +68,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
     }
 
 
-    private IEnumerator ResolveMap() {
+    private IEnumerator ExecuteActions() {
         List<Action> actions = map.GetComponent<Map>().GetActions();
 
         if (actions.Count>0) {
@@ -148,7 +147,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
     }
 
 
-    private IEnumerator ActivateMap(Callback callback) {
+    private IEnumerator EnableTiles(Callback callback) {
         float speed = 0.05f;
 
         List<int> indexes = map.GetComponent<Map>().GetTilesAvailable();
@@ -172,9 +171,6 @@ public class Turn : MonoBehaviour, ITurnEnded {
         callback();
     }
 
-    public void Fight() {
-        StartCoroutine(ResolveMap());
-    }
 
     /*
     * Events
@@ -182,7 +178,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
     public void OnTurnEnded(GameObject unit) {
         cards.GetComponent<Cards>().Hide();
 
-        StartCoroutine(ActivateMap(Fight));
+        StartCoroutine(EnableTiles(ResolveMap));
     }
 }
 

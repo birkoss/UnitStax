@@ -1,21 +1,6 @@
 TODO
 ====
 
-* Refactor the Turn Controller
- * Begin()
- * StartAction()
- * Waiting for Input
-  * Cards.Show() (And waiting for player input)
-    * OnTurnEnded(unit)
-  * #AI()
-   * OnTurnEnded(unit)
- * OnTurnEnded(unit)
- * Cards.Hide()
- * #ActivateMap
- * Fight
- * #ResolveMap
- * End()
-
 * Uniformized all animations
  * Cards
 
