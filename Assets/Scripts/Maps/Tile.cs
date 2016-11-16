@@ -6,12 +6,17 @@ using UnityEngine.UI;
 public class Tile : MonoBehaviour {
 
     public GameObject active;
+    public GameObject unitGameObject;
 
     private GameObject floor;
     private Vector2 tilePosition;
 
+    public GameObject unit {
+        get { return unitGameObject.transform.GetChild(0).gameObject; }
+    }
+
     public bool isEmpty {
-        get { return (transform.childCount == 2); }
+        get { return (unitGameObject.transform.childCount == 0); }
     }
 
     public bool isEnable {

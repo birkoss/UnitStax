@@ -20,7 +20,7 @@ public class DropHandler : MonoBehaviour, IDropHandler {
             GameObject card = DragHandler.itemBeginDragged.transform.parent.parent.gameObject;
             card.GetComponent<Card>().Hide();
 
-            DragHandler.itemBeginDragged.transform.SetParent(transform);
+            DragHandler.itemBeginDragged.transform.SetParent(GetComponent<Tile>().unitGameObject.transform);
             DragHandler.itemBeginDragged.transform.localPosition = new Vector3(0f, 0f, 0f);
             DragHandler.itemBeginDragged.GetComponent<Unit>().player = 0;
             DragHandler.itemBeginDragged.GetComponent<Animator>().enabled = true;

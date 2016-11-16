@@ -58,7 +58,8 @@ public class Turn : MonoBehaviour, ITurnEnded {
         GameObject tile = tiles[Random.Range(0, tiles.Length-1)];
 
         // Place a unit
-        GameObject unit = Instantiate(PrefabManager.Instance.Get("skeleton"), tile.transform);
+
+        GameObject unit = Instantiate(PrefabManager.Instance.Get("skeleton"), tile.GetComponent<Tile>().unitGameObject.transform);
         unit.transform.localPosition = Vector3.zero;
         unit.transform.localScale = new Vector3(1f, 1f, 1f);
         unit.GetComponent<Unit>().player = 1;
@@ -73,8 +74,10 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
         if (actions.Count>0) {
             for (int i=0; i<actions.Count; i++) {
-                GameObject attacker = actions[i].unit.transform.GetChild(2).gameObject;
-                GameObject defender = actions[i].target.transform.GetChild(2).gameObject;
+                Debug.Log(actions[i].unit);
+                Debug.Log(actions[i].target);
+                GameObject attacker = actions[i].unit.GetComponent<Tile>().unit;
+                GameObject defender = actions[i].target.GetComponent<Tile>().unit;
 
                 if (attacker.GetComponent<Unit>().isAlive && defender.GetComponent<Unit>().isAlive) {
                     Vector3 endPosition = defender.transform.position;
@@ -130,7 +133,7 @@ public class Turn : MonoBehaviour, ITurnEnded {
 
 
                     // Restore the attacker's position to a tile
-                    attacker.transform.SetParent(actions[i].unit.transform);
+                    attacker.transform.SetParent(actions[i].unit.GetComponent<Tile>().unitGameObject.transform);
 
                     yield return new WaitForSeconds(0.25f);
                 }
@@ -176,6 +179,11 @@ public class Turn : MonoBehaviour, ITurnEnded {
     * Events
     */
     public void OnTurnEnded(GameObject unit) {
+        // var healthBar = Instantiate(PrefabManager.Instance.Get("healthbar"), unit.transform.parent);
+        //
+        // healthBar.transform.localScale = new Vector3(1f, 1f, 1f);
+        // healthBar.transform.localPosition = new Vector3(0f, 20f, 0f);
+
         cards.GetComponent<Cards>().Hide();
 
         StartCoroutine(EnableTiles(ResolveMap));

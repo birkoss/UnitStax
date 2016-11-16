@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class Map : MonoBehaviour, IUnitPlaced {
 
-    private int rows = 6;
-    private int cols = 6;
+    private int rows = 5;
+    private int cols = 5;
 
     private List<int> units;
 
@@ -92,16 +92,16 @@ public class Map : MonoBehaviour, IUnitPlaced {
             int index = units[i];
             GameObject tile = transform.GetChild(index).gameObject;
             if (!tile.GetComponent<Tile>().isEmpty) {
-                if (tile.transform.GetChild(2).GetComponent<Unit>().isAlive) {
+                if (tile.GetComponent<Tile>().unit.GetComponent<Unit>().isAlive) {
 
-                    var tilePlayer = tile.transform.GetChild(2).GetComponent<Unit>().player;
+                    var tilePlayer = tile.GetComponent<Tile>().unit.GetComponent<Unit>().player;
 
                     List<GameObject> enemies = new List<GameObject>();
                     List<int> indexes = GetNeighboors(tile.GetComponent<Tile>().position);
                     GameObject otherTile;
                     for (int j=0; j<indexes.Count; j++) {
                         otherTile = transform.GetChild(indexes[j]).gameObject;
-                        if (!otherTile.GetComponent<Tile>().isEmpty && otherTile.transform.GetChild(2).GetComponent<Unit>().player != tilePlayer) {
+                        if (!otherTile.GetComponent<Tile>().isEmpty && otherTile.GetComponent<Tile>().unit.GetComponent<Unit>().player != tilePlayer) {
                             enemies.Add(otherTile);
                         }
                     }
@@ -147,8 +147,8 @@ public class Map : MonoBehaviour, IUnitPlaced {
         for (int i=0; i<transform.childCount; i++) {
             GameObject tile = transform.GetChild(i).gameObject;
             if (!tile.GetComponent<Tile>().isEmpty) {
-                if (!tile.transform.GetChild(2).GetComponent<Unit>().isAlive) {
-                    Destroy(tile.transform.GetChild(2).gameObject);
+                if (!tile.GetComponent<Tile>().unit.GetComponent<Unit>().isAlive) {
+                    Destroy(tile.GetComponent<Tile>().unit.gameObject);
                     units.Remove(i);
                 }
             }
@@ -162,9 +162,8 @@ public class Map : MonoBehaviour, IUnitPlaced {
     public void OnUnitPlaced(GameObject unit) {
         //unit.GetComponent<Animator>().enabled = true;
         //unit.GetComponent<DragHandler>().enabled = false;
-        Debug.Log(unit.transform.parent);
 
-        GameObject tile = unit.transform.parent.gameObject;
+        GameObject tile = unit.transform.parent.parent.gameObject;
         int index = (int)((tile.GetComponent<Tile>().position.y * rows) + tile.GetComponent<Tile>().position.x);
         units.Add(index);
     }

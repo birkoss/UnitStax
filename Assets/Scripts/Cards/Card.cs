@@ -25,7 +25,6 @@ public class Card : MonoBehaviour {
     }
 
     public void Hide() {
-        Debug.Log("hidin...");
         GetComponent<Animator>().SetBool("isEmpty", true);
     }
 }
