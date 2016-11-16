@@ -1,9 +1,6 @@
 TODO
 ====
 
-* Change spritesheets
- * One spritesheet per Unit (Idle animation)
-
 * Show a health bar over the unit
  * Change the grid size to 5x5 and make the tile bigger than the unit (allowing a health bar)
 
